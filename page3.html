@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mode of Payment</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(90deg, #8d72c2, #12c5ed, #f1f1f6);
+            color: #333;
+        }
+    
+        /* Ensure the interface doesn't overflow */
+        html, body {
+            max-width: 100vw;
+            max-height: 100vh;
+            overflow: hidden;
+        }
+    
+        .payment-title {
+            text-align: center;
+            color: #333;
+            font-size: 34px;
+            margin-top: 30px;
+        }
+    
+        .payment-options {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 900px;
+            padding-top: 20px;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            gap: 20px; /* Add space between items */
+        }
+    
+        .payment-option {
+            border: 2px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 350px;
+            height: 170px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background-color 0.1s ease, box-shadow 0.1s ease;
+        }
+    
+        .payment-option:hover {
+            background-color: #f1f3f5;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+    
+        .payment-text {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    
+        .payment-text img {
+            width: 120px;
+            height: auto;
+        }
+    
+        .payment-label {
+            margin-top: 20px;
+            font-size: 1.3em;
+            text-align: center;
+            color: #333;
+        }
+    
+        @media (max-width: 768px) {
+            .payment-options {
+                padding-top: 10px;
+                justify-content: center; /* Center the options */
+            }
+    
+            .payment-option {
+                width: 100%; /* Make payment option full width on smaller screens */
+                margin-bottom: 20px;
+            }
+    
+            .payment-label {
+                font-size: 1em; /* Adjust font size for smaller screens */
+            }
+    
+            .payment-text img {
+                width: 80px; /* Reduce the image size on small screens */
+            }
+        }
+    
+        @media (max-width: 480px) {
+            .payment-title {
+                font-size: 28px; /* Adjust title size for very small screens */
+            }
+    
+            .payment-option {
+                width: 100%; /* Ensure full width for small screens */
+                padding: 10px; /* Reduce padding for smaller screens */
+            }
+    
+            .payment-label {
+                font-size: 1.1em; /* Slightly smaller label text */
+            }
+    
+            .payment-text img {
+                width: 70px; /* Further reduce image size on very small screens */
+            }
+        }
+    
+        /* CSS for selected payment option */
+        .selected {
+            border-color: #004a99;
+            box-shadow: 0 0 10px rgba(0, 74, 153, 0.5);
+            background-color: #e0f0ff;
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="payment-title">
+        <h2>Select Mode of Payment</h2>
+        <p style="text-align: center; color: #555; font-size: 16px;">Please choose your preferred payment method below:</p>
+    </div>
+
+    <div id="paymentForm">
+        <div class="payment-options">
+            <!-- Coin Payment Option -->
+            <div id="coinPayment" class="payment-option" onclick="selectPaymentMethod('coin')">
+                <div class="payment-text">
+                    <img src="coin.png" alt="Coin Payment">
+                </div>
+                <p class="payment-label">Coin Payment</p>
+            </div>
+    
+            <!-- Bill Payment Option -->
+            <div id="billPayment" class="payment-option" onclick="selectPaymentMethod('bill')">
+                <div class="payment-text">
+                    <img src="cash.png" alt="Bill Payment">
+                </div>
+                <p class="payment-label">Bill Payment</p>
+            </div>
+        </div>
+    </div>         
+    <script>
+        // Handle TO ACTIVATE THE COIN SLOT
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click event listener to the element with id="coinPayment"
+            document.getElementById('coinPayment').addEventListener('click', function() {
+                activateCoinSlot();  // Call the function to activate the coin slot
+            });
+        });
+    
+        function activateCoinSlot() {
+            // Send a request to activate the coin slot on the ESP8266
+            fetch('/activate-coin')
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);  // Log the response from the ESP8266
+                    alert(data);        // Display an alert to the user indicating that the coin slot is activated
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("Failed to activate the coin slot.");
+                });
+        }
+    </script>
+    
+
+    <script>
+        // JavaScript function to handle payment method selection
+        function selectPaymentMethod(method) {
+            const coinPayment = document.getElementById('coinPayment');
+            const billPayment = document.getElementById('billPayment');
+            
+            // Store the required amount in localStorage
+            const requiredAmount = localStorage.getItem('amountToPay');  // Use getItem to retrieve the value
+            
+            // Retrieve necessary data from localStorage
+            const layout = localStorage.getItem('selectedLayout');
+            const quantity = localStorage.getItem('quantity');
+    
+            if (method === 'coin') {
+                // Enable coin slot and disable bill acceptor
+                coinPayment.style.backgroundColor = 'lightgreen';
+                billPayment.style.backgroundColor = '';
+                window.location.href = 'coinpay.html?layout=' + layout + '&quantity=' + quantity;  // Redirect to coin payment page
+                fetch('/coin');  // Send request to enable the coin slot
+            } else if (method === 'bill') {
+                // Enable bill acceptor and disable coin slot
+                billPayment.style.backgroundColor = 'lightgreen';
+                coinPayment.style.backgroundColor = '';
+                // Directly redirect to cashpay.html without any unnecessary actions
+                window.location.href = 'cashpay.html?layout=' + layout + '&quantity=' + quantity;  // Redirect to cash payment page
+            }
+        }
+    </script>
+    
+    <script>
+        document.getElementById("billPayment").addEventListener("click", function() {
+          // Send a request to the ESP8266 server to activate the bill acceptor
+          fetch('/activate-bill')
+            .then(response => response.text())
+            .then(data => alert(data))
+            .catch(error => console.error("Error activating bill acceptor:", error));
+        });
+      </script>
+</body>
+</html>

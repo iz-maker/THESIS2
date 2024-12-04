@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Interface</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(90deg, #8d72c2, #12c5ed, #f1f1f6);
+          color: #333;
+        }
+
+        #header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 50px;
+    align-items: center;
+    margin-bottom: auto;
+}
+
+#header-text div {
+    text-align: center;
+    margin: 10px 0;
+    font-size: 2vw;
+}
+
+#course {
+    font-weight: bold;
+    font-size: 1.2vw;
+}
+
+#slsulogo {
+    width: 160px;
+    height: 160px;
+    padding: 0 20px;
+}
+#celogo {
+    width: 140px;
+    height: 140px;
+}
+#icpep {
+    width: 170px;
+    height: 170px;
+}
+
+
+#front-text {
+    position: absolute;
+    left: 100px;
+    font-weight: bold;
+    color: black;
+    margin-top: 500px;
+    padding: 0 50px;   
+}
+
+#front-text {
+    text-align: center;
+    font-size: 80px;
+    margin-top: 520px;
+    font-family: 'Verdana, sans-serif';
+}
+#front-text div {
+    text-align: center;
+    margin: 10px 0;
+    font-size: 60px;
+}
+
+        #front-text {
+            font-weight: bold;
+            color: #333;
+            margin-top: 50px;
+            padding: 0 20px; /* Adjusted padding */
+            text-align: center;
+        }
+
+        /* Ensure the interface doesn't overflow */
+        html, body {
+            max-width: 100vw;
+            max-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* page 2 */
+        #form-container {
+          
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            width: 75%;
+            max-width: 900px;
+            margin-left: 20px;
+            margin-top: 20px;
+            margin-right: 20px; 
+            margin-bottom: 40px;
+            border: 1px solid #3a6ea5;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.12);
+            transition: box-shadow 0.3s ease;
+            background-color: transparent;
+        }
+
+    
+        #form-container:hover {
+            box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.2);
+        }
+
+        #input-fields {
+            flex: 3;
+            margin-right: 50px;
+            min-width: 250px;
+        }
+
+        /* Add media queries for responsiveness */
+        @media (max-width: 768px) {
+            #form-container {
+                width: 90%;
+            }
+            #input-fields {
+                margin-right: 0;
+                flex: 1;
+            }
+        }
+
+        #stock-display {
+            width: 220px;
+            margin-left: 50px;
+            min-width: 220px;
+            font-size: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            min-width: 150px;
+        }
+
+        .form-group label {
+            flex: 1;
+            margin-right: 10px;
+           
+            font-size: 20px;
+            min-width: 150px;
+        }
+
+        @media (max-width: 768px) {
+            .form-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .form-group label {
+                margin-bottom: 5px; /* Adds space between the label and input field */
+            }
+        }
+
+        select, input[type="number"], input[type="checkbox"] {
+            font-size: 1.2em;
+            padding: 10px 20px;
+            width: 335px;
+            height: 25px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        select:focus, input[type="number"]:focus {
+            border-color: #3a6ea5;
+            outline: none;
+        }
+
+        .program-select {
+            width: 380px;
+            height: 43px;
+            font-size: 16px;
+            padding: 8px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0);
+            appearance: none;
+        }
+
+        .program-select:focus {
+            border-color: #4b7bec;
+            outline: none;
+            box-shadow: 0 0 5px rgba(75, 123, 236, 0.5);
+        }
+
+        .program-select::-ms-expand {
+            display: none;
+        }
+
+        /* quantity */
+        .quantity-input {
+            width:70px;
+            height: 35px;
+            font-size: 16px;
+            padding: 8px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0);
+            }
+
+        /* Optional: Style the input field on focus */
+        .quantity-input:focus {
+            border-color: #4b7bec;
+            outline: none;
+            box-shadow: 0 0 5px rgba(75, 123, 236, 0.5);
+        }
+
+        #amountToPay {
+        font-size: 1.5em;
+        padding: 5px 0;
+        width: 100%;
+        max-width: 375px;
+        height: auto;
+        min-height: 40px;
+        border: none;
+        background-color: transparent;
+        color: #000;
+        box-sizing: border-box;
+        pointer-events: none;
+        position: relative;
+
+    }
+
+    #amountToPay::after {
+        content: ''; /* Pseudo-element for bottom line */
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 80%;
+        height: 2px;
+        background-color: #940606;
+    }
+
+    @media (max-width: 768px) {
+        #amountToPay {
+            font-size: 1.2em;
+            padding: 8px 0;
+            min-height: 35px;
+        }
+        }
+
+
+        /* proceed button */
+        .button-container{
+        display: block;
+        margin-bottom: 40px;
+       
+
+        }
+     
+
+        .button-container input.sub {
+            background-color: #4b7bec;
+            border: 3px solid #2c5d9e;
+            color: white;
+            width: 300px;
+            padding: 15px 50px;
+            font-size: 25px;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 23px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .button-container input.sub:hover {
+            background-color: #00008b;
+            color: #add8e6;
+        }
+
+
+        #previewModal {
+            display: none; /* This is set to none initially */
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Darker background */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Ensure it overlays other content */
+        }
+
+        #previewModal.h2 {
+            margin: 0;
+            padding-top: 2px;
+        }
+        .view {
+           display: block;
+           text-align: justify;
+           margin-left: 120px;
+           font-size: 15px;
+        }
+        .confirm {
+            width: 80px;
+            padding: 12px;
+            color: white;
+            background-color: #006eff;
+            border-radius: 10%;
+            font-size: 14px;
+            font-weight: bold;
+
+        }
+
+        .confirms {
+            width: 80px;
+            padding: 12px;
+            color: white;
+            background-color: #09ff00;
+            border-radius: 10%;
+            font-size: 14px;
+            font-weight: bold;
+
+        }
+
+        .confirm:hover{
+            background-color: #0084ff;
+        }
+
+        .confirms:hover{
+            background-color: #ff0000e1;
+        }
+        .error-message {
+        display: none;
+        color: #d9534f; /* Bootstrap's danger color */
+        font-size: 0.8rem;
+        font-weight: bold;
+        position: relative;
+        top: 5px;
+        transition: opacity 0.3s ease;
+    }
+
+    /* Make the error message more responsive */
+    @media (max-width: 768px) {
+        .error-message {
+            font-size: 0.85rem;
+            margin-left: 5px;
+        }
+    }
+
+    </style>
+</head>
+<body>
+    <div id="header">
+        <img id="slsulogo" src="slsu.png" alt="SLSU Logo">
+        <div id="header-text">
+            <div>SOUTHERN LEYTE STATE UNIVERSITY</div>
+            <div>FACULTY OF ENGINEERING</div>
+            <div id="course">Bachelor of Science in Computer Engineering</div>
+        </div>
+        <img id="celogo" src="celogo.png" alt="CE Logo">
+        <img id="icpep" src="icpeplogo.png" alt="">
+    </div>
+
+
+    <div id="form-container" class="conatainer">
+        <div id="input-fields">
+            <div class="form-group">
+                <label for="program">Program:</label>
+                <select id="program" name="program" class="program-select" required>
+                    <option value="" disabled selected>Select Program</option>
+                    <option value="Faculty of Engineering">Faculty of Engineering</option>
+                    <option value="Faculty of Hospitality and Tourism Management">Faculty of Hospitality and Tourism Management</option>
+                    <option value="Faculty of Computer Studies and Information Technology">Faculty of Computer Studies and Information Technology</option>
+                    <option value="Faculty of Criminal Justice">Faculty of Criminal Justice</option>
+                    <option value="Faculty of Teacher Education">Faculty of Teacher Education</option>
+                    <option value="Faculty of Technology">Faculty of Technology</option>
+                </select>
+            </div>
+            
+    
+                <div class="form-group">
+                    <label>Layout:</label>
+                    <div style="display: flex; align-items: center;">
+                        <input type="radio" id="lined" name="layout" value="Lined" style="margin-right: 10px;" required>
+                        <label for="lined">Lined Layout</label>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <input type="radio" id="unlined" name="layout" value="Unlined" style="margin-right: 10px;" required>
+                        <label for="unlined">Unlined Layout</label>
+                    </div>
+                </div>
+    
+                <div class="form-group">
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" id="quantity" name="quantity" min="1" max="10" value="" required class="quantity-input">
+                    <span id="quantityError" class="error-message">Quantity must be between 1 and 10</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="amountToPay">Amount to Pay:</label>
+                    <input type="text" id="amountToPay" name="amountToPay" value="" readonly>
+                </div>
+        </div>
+
+            <div id="stock-display">
+                <h3>Available Stock:</h3>
+                <p>Lined Layout: <span id="lined-stock"></span></p>
+                <p>Unlined Layout: <span id="unlined-stock"></span></p>
+            </div>
+
+                <!-- Modal structure -->
+                <div id="previewModal" style="display:none; position:fixed; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5);">
+                    <div style="background:white; margin: 15% auto; padding: 20px; border-radius: 5px; width: 400px; ; border: 2px solid rgb(131, 130, 130); box-shadow: 5px ;">
+                        <h2 class="h2">Purchase Summary</h2>
+                            <div class="view"> 
+                                <p><strong>Program:</strong> <span id="previewProgram"></span></p>
+                                <p><strong>Layout:</strong> <span id="previewLayout"></span></p>
+                                <p><strong>Quantity:</strong> <span id="previewQuantity"></span></p>
+                                <p><strong>Amount to Pay:</strong> <span id="previewAmountToPay">₱0.00</span></p>
+                                <button id="confirmButton" class="confirm">Confirm</button>
+                                <button id="cancelButton" style="margin-left: 10px;" class="confirms">Cancel</button>
+                            </div>
+                    </div>
+                </div>                                
+                
+        </div>
+
+       
+        <div class="button-container">
+            <input type="submit" value="Proceed" class="sub" id="submit">
+        </div>
+        
+
+
+        <script>
+            // Add the event listener for the confirm button
+            document.getElementById("confirmButton").addEventListener("click", function() {
+        const selectedProgram = document.getElementById("program").value;
+        const selectedLayout = document.querySelector('input[name="layout"]:checked').value;
+        const quantity = parseInt(document.getElementById("quantity").value, 10);
+        const totalAmount = parseFloat(document.getElementById("amountToPay").value.replace('₱', ''));
+        
+        // Store the selected values in localStorage to pass them to page3.html
+        localStorage.setItem("selectedProgram", selectedProgram);
+        localStorage.setItem("selectedLayout", selectedLayout);
+        localStorage.setItem("quantity", quantity);
+        localStorage.setItem("amountToPay", totalAmount.toFixed(2)); // Save the amountToPay under this key
+
+                window.location.href = "page3.html";
+            });
+        </script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDqxo3IrnvOX2_9c2fv96iDeq1c8X4AE94",
+        authDomain: "fir-v10-15166.firebaseapp.com",
+        databaseURL: "https://fir-v10-15166-default-rtdb.firebaseio.com",
+        projectId: "fir-v10-15166",
+        storageBucket: "fir-v10-15166.appspot.com",
+        messagingSenderId: "199033930521",
+        appId: "1:199033930521:web:48501e8ea61ff8c5413b88"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Load stock counts from localStorage or set to default if not present
+    let linedStockCount = localStorage.getItem('linedStockCount') ? parseInt(localStorage.getItem('linedStockCount'), 10) : 40;
+    let unlinedStockCount = localStorage.getItem('unlinedStockCount') ? parseInt(localStorage.getItem('unlinedStockCount'), 10) : 40;
+
+    // Price mapping based on quantity
+    const priceMapping = {
+        1: 4,
+        2: 7,
+        3: 11,
+        4: 14,
+        5: 18,
+        6: 21,
+        7: 25,
+        8: 28,
+        9: 32,
+        10: 35
+    };
+
+    // Update stock display function
+    function updateStockDisplay() {
+        document.getElementById("lined-stock").innerText = linedStockCount;
+        document.getElementById("unlined-stock").innerText = unlinedStockCount;
+    }
+
+    // Check quantity input for valid range (1-10)
+    function checkQuantity() {
+        const quantityInput = document.getElementById("quantity");
+        const quantity = parseInt(quantityInput.value, 10);
+        const quantityError = document.getElementById("quantityError");
+
+        if (quantityInput.value === "") {
+            quantityError.style.display = "none";
+            document.getElementById("amountToPay").value = "";
+            return;
+        }
+
+        if (quantity < 1 || quantity > 10 || isNaN(quantity)) {
+            quantityError.style.display = "block";
+            document.getElementById("amountToPay").value = "";
+        } else {
+            quantityError.style.display = "none";
+            calculateAmount(); // Calculate if there is a valid input
+        }
+    }
+
+    // Calculate the amount in real-time based on the quantity
+    function calculateAmount() {
+        const quantity = parseInt(document.getElementById("quantity").value, 10);
+        const totalAmount = priceMapping[quantity] || 0;
+        document.getElementById("amountToPay").value = `₱${totalAmount.toFixed(2)}`;
+    }
+
+    document.getElementById("submit").addEventListener('click', function (e) {
+        e.preventDefault(); // Prevent form submission
+
+        // Get input values
+        const selectedProgram = document.getElementById("program").value;
+        const selectedLayout = document.querySelector('input[name="layout"]:checked').value;
+        const quantity = parseInt(document.getElementById("quantity").value, 10);
+
+        // Check if quantity is within valid range
+        if (quantity < 1 || quantity > 10 || isNaN(quantity)) {
+            document.getElementById("quantityError").style.display = "block";
+            return;
+        }
+
+        // Set the preview modal values
+        const totalAmount = priceMapping[quantity];
+        document.getElementById("previewProgram").innerText = selectedProgram;
+        document.getElementById("previewLayout").innerText = selectedLayout;
+        document.getElementById("previewQuantity").innerText = quantity;
+        document.getElementById("previewAmountToPay").innerText = `₱${totalAmount.toFixed(2)}`; // Show amount in the modal
+
+        // Show the preview modal
+        document.getElementById("previewModal").style.display = "block";
+
+        // Confirm button event
+        document.getElementById("confirmButton").onclick = function () {
+            // Decrease stock count based on layout selected
+            if (selectedLayout === "Lined") {
+                if (quantity <= linedStockCount) {
+                    linedStockCount -= quantity; // Deduct from lined stock
+                } else {
+                    alert("Not enough stock available for Lined Layout!");
+                    return;
+                }
+            } else if (selectedLayout === "Unlined") {
+                if (quantity <= unlinedStockCount) {
+                    unlinedStockCount -= quantity; // Deduct from unlined stock
+                } else {
+                    alert("Not enough stock available for Unlined Layout!");
+                    return;
+                }
+            }
+
+            updateStockDisplay(); // Update stock display
+            // Save updated stock counts to localStorage
+            localStorage.setItem('linedStockCount', linedStockCount);
+            localStorage.setItem('unlinedStockCount', unlinedStockCount);
+            
+            // updated on NOV.15 nag add og AM and PM for time
+            // Save data to Firebase
+            const now = new Date();
+            const currentDate = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`; // Format: YYYY-MM-DD
+
+            // Convert time to 12-hour format with AM/PM
+            let hours = now.getHours();
+            const minutes = String(now.getMinutes()).padStart(2, '0'); // Ensure two-digit minutes
+            const seconds = String(now.getSeconds()).padStart(2, '0'); // Ensure two-digit seconds
+            const amPm = hours >= 12 ? 'PM' : 'AM'; // Determine AM or PM
+            hours = hours % 12 || 12; // Convert 0 (midnight) or 12 (noon) to 12-hour format
+            const currentTime = `${hours}:${minutes}:${seconds} ${amPm}`; // Format: HH:MM:SS AM/PM
+
+            // Structure data for Firebase
+            set(ref(db, 'sales/' + currentDate + '/' + currentTime), {
+                program: selectedProgram,
+                layout: selectedLayout,
+                quantity: quantity,
+                amountToPay: totalAmount
+            }).then(() => {
+                // Save to local storage
+                const salesData = JSON.parse(localStorage.getItem('totalSales')) || [];
+                const data = {
+                    program: selectedProgram,
+                    layout: selectedLayout,
+                    quantity: quantity,
+                    timestamp: `${currentDate} ${currentTime}`, // Full timestamp to display in the table
+                    total: `PHP ${totalAmount.toFixed(2)}`
+                };
+                salesData.push(data);
+                localStorage.setItem('totalSales', JSON.stringify(salesData));
+
+                // Clear input fields
+                document.getElementById("program").value = "";
+                document.getElementById("quantity").value = "";
+                document.querySelector('input[name="layout"]:checked').checked = false;
+                document.getElementById("amountToPay").value = "";
+                document.getElementById("quantityError").style.display = "none";
+
+                // Close modal and redirect to page3.html after saving the data
+                document.getElementById("previewModal").style.display = "none";
+                window.location.href = 'page3.html';
+            }).catch((error) => {
+                console.error("Error saving data: ", error);
+            });
+        };
+
+        // Cancel button event
+        document.getElementById("cancelButton").onclick = function () {
+            document.getElementById("previewModal").style.display = "none";
+        };
+    });
+
+    // Attach event listener to quantity input for real-time calculation and restriction
+    window.onload = function () {
+        document.getElementById("quantity").addEventListener('input', checkQuantity);
+        updateStockDisplay(); // Initial stock display
+
+        // Restrict input to numbers only
+        document.getElementById("quantity").addEventListener('keypress', function (e) {
+            if (!/[0-9]/.test(e.key) && e.key !== 'Backspace') {
+                e.preventDefault(); // Prevent input if not a number
+            }
+        });
+    };
+
+    // Update sales table
+    updateSalesTable();
+    createSalesByProductChart();
+    createSalesByFacultyChart();
+    updateTopCustomer();
+    createTotalSalesChart();
+</script>                        
+
+    </body>
+</html>

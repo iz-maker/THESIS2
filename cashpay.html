@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insert Cash</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(90deg, #8d72c2, #12c5ed, #f1f1f6);
+            color: #333; /* Slightly darker text for contrast */
+        }
+    
+        /* Insert Cash Container */
+        #insert-cash-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 400px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    
+        #bill-gif {
+            width: 150px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            animation: blink 1s step-start infinite;
+        }
+    
+        /* Blinking animation */
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+    
+        #status {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    
+        #status.pending {
+            color: red;
+        }
+    
+        /* Modal styling for Payment Successful */
+        #modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 540px;
+            height: 110px;
+            padding: 20px;
+            background-color: white;
+            border: 2px solid green;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            z-index: 1000;
+        }
+    
+        #modal h2 {
+            font-size: 40px;
+            font-weight: bold;
+            color: green;
+        }
+    
+        /* Overlay to dim background */
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            /* Insert cash container */
+            #insert-cash-container {
+                width: 90%; /* Reduce width for smaller screens */
+                padding: 15px; /* Reduce padding */
+            }
+    
+            #bill-gif {
+                width: 120px; /* Reduce gif size */
+                height: auto;
+            }
+    
+            #status {
+                font-size: 20px; /* Adjust font size for smaller screens */
+            }
+    
+            /* Modal adjustments */
+            #modal {
+                width: 90%; /* Reduce modal width */
+                height: auto; /* Adjust height automatically */
+            }
+    
+            #modal h2 {
+                font-size: 32px; /* Adjust font size for modal */
+            }
+        }
+    
+        @media (max-width: 480px) {
+            /* Further adjustments for very small screens (phones) */
+            #insert-cash-container {
+                width: 95%; /* Even wider container */
+                padding: 10px; /* Further reduce padding */
+            }
+    
+            #bill-gif {
+                width: 100px; /* Further reduce gif size */
+                height: auto;
+            }
+    
+            #status {
+                font-size: 18px; /* Further reduce font size for status */
+            }
+    
+            #modal {
+                width: 95%; /* Full width for modal on very small screens */
+                height: auto; /* Allow modal height to adjust */
+            }
+    
+            #modal h2 {
+                font-size: 28px; /* Smaller font size for modal */
+            }
+        }
+        #confirm-button {
+    transition: opacity 1s;
+}
+
+#change-dispensing-popup {
+    display: none;
+    opacity: 0;
+    transition: opacity 1s;
+    font-size: 1.5em;
+    text-align: center;
+    padding: 20px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+}
+
+    </style>
+    
+</head>
+<body>
+    <div id="insert-cash-container">
+      <h2>Insert Bill</h2>
+      <p>Amount to Pay: <span id="required-amount">₱0.00</span></p>
+      <img id="bill-gif" src="insertbill.jpg" alt="Bill Insertion Animation" width="150">
+      <div id="status" class="pending">Payment is Pending...</div>
+      <div id="total-amount">Total Inserted: <span id="amount">₱0.00</span></div>
+
+      <button id="confirm-button" onclick="confirmPayment()" style="display: none;">Confirm Payment</button>
+      
+      <div id="change-display" style="display: none; margin-top: 10px; color: green; font-weight: bold;">
+          Change: <span id="change-amount">₱0.00</span>
+      </div>
+      <!-- Fade Out Animation Container -->
+    <div id="change-dispensing-popup" style="display: none;">Change is Dispensing...</div>
+
+
+
+  <script>
+
+    function updateAmountToPay() {
+        const amountToPay = document.getElementById('previewAmountToPay').innerText;
+        document.getElementById('required-amount').innerText = amountToPay;
+    }
+
+    window.onload = updateAmountToPay;
+</script>
+
+<script>
+    // Function to update the inserted amount and check if the Confirm Payment button should be displayed
+    function updateAmount() {
+        fetch("/total-bill-value")
+            .then(response => response.text())
+            .then(data => {
+                // Parse the inserted amount (assumed to be in '₱X.XX' format)
+                let insertedAmount = parseFloat(data.replace('₱', '').replace(',', '')); // Remove currency symbol and commas
+                let requiredAmount = parseFloat(document.getElementById("required-amount").innerText.replace('₱', '').replace(',', ''));
+
+                // Update the amount displayed
+                document.getElementById("amount").innerText = "₱" + insertedAmount.toFixed(2);
+
+                // Check if the inserted amount is greater than or equal to the required amount
+                if (insertedAmount >= requiredAmount) {
+                    // Show Confirm Payment button
+                    document.getElementById("confirm-button").style.display = "inline-block";
+                    deactivateBillAcceptor();
+
+                    // Calculate and show change
+                    let changeAmount = insertedAmount - requiredAmount;
+                    document.getElementById("change-amount").innerText = "₱" + changeAmount.toFixed(2);
+                    document.getElementById("change-display").style.display = "block"; // Show change display
+                } else {
+                    // Hide Confirm Payment button if not enough money
+                    document.getElementById("confirm-button").style.display = "none";
+                    document.getElementById("change-display").style.display = "none"; // Hide change display
+                }
+            })
+            .catch(error => console.error("Error fetching bill value:", error));
+    }
+
+    // Call updateAmount() every second to keep it up to date
+    setInterval(updateAmount, 1000);
+
+    // Fetch the bill amount when the page loads
+    window.onload = function() {
+        updateAmount(); // Call to update the amount on page load
+    };
+
+    // Confirm payment logic
+// Confirm payment logic
+function confirmPayment() {
+    // Immediately show the "Change is Dispensing..." popup
+    showDispensingPopup();
+    
+    // Get the required and inserted amounts
+    const requiredAmount = parseFloat(document.getElementById("required-amount").innerText.replace('₱', '').trim());
+    const insertedAmount = parseFloat(document.getElementById("amount").innerText.replace('₱', '').trim());
+
+    // Calculate change
+    const changeAmount = insertedAmount - requiredAmount;
+
+    // Display the calculated change on the page
+    document.getElementById("change-amount").innerText = "₱" + changeAmount.toFixed(2); // Update the change amount
+    document.getElementById("change-display").style.display = "block"; // Show change display
+
+    // Send the change amount to the server (e.g., to update the Arduino or perform any other action)
+    fetch("/send-change", {  // Send a POST request to the server
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ change: changeAmount })  // Sending change data
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Handle server response
+        console.log(data.message);  // Log server response
+        if (data.status === "success") {
+            // After a delay (to show the popup), redirect to dispense.html
+            setTimeout(() => {
+                window.location.href = 'dispense.html';  // Redirect to the dispense page
+            }, 3000); // Adjust the delay time as needed
+        } else {
+            alert("Error processing change.");
+        }
+    })
+    .catch(error => {
+        console.error("Error sending change data:", error);
+        alert("Failed to process change.");
+    });
+}
+
+// Function to send a request to the ESP8266 to deactivate the bill acceptor
+function deactivateBillAcceptor() {
+            fetch("/deactivate-bill")
+              .then(response => response.text())
+              .then(data => {
+                console.log("Bill acceptor deactivated: " + data);
+                document.getElementById("status").innerText = "Payment Accepted!";
+                document.getElementById("confirm-button").style.display = "inline-block";
+              })
+              .catch(error => console.error("Error deactivating bill acceptor: ", error));
+          }
+    // Function to show the dispensing popup
+    function showDispensingPopup() {
+    // Fade out the confirm button
+    const confirmButton = document.getElementById("confirm-button");
+    confirmButton.style.transition = "opacity 1s";
+    confirmButton.style.opacity = 0;
+
+    // Show "Change is Dispensing" popup
+    const popup = document.getElementById("change-dispensing-popup");
+    popup.style.display = "block";
+    popup.style.opacity = 1;
+    popup.style.transition = "opacity 1s";
+}
+
+
+        // Retrieve the amount stored in localStorage and set it to the required-amount element
+        var amountToPay = localStorage.getItem('amountToPay');
+        
+        // Set the retrieved amount to the required-amount element
+        if (amountToPay) {
+            document.getElementById('required-amount').innerText = amountToPay;
+        }
+    </script>
+
+</body>
+</html>

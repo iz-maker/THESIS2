@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispense Product</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(90deg, #8d72c2, #12c5ed, #f1f1f6);
+            color: #333;
+            overflow: hidden;
+        }
+    
+        /* dispense text */
+        #left-text {
+            font-size: 8vw; /* Use viewport width for responsive font size */
+            font-family: 'Verdana, sans-serif';
+            font-weight: bold;
+            color: black;
+            text-align: center;
+            margin-bottom: 20px; /* Adds space below the text */
+        }
+    
+        .blinking {
+            animation: blinkingText 1.5s infinite;
+        }
+    
+        @keyframes blinkingText {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+    
+        .button-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+    
+        .button-container button {
+            background-color: hsl(197, 60%, 48%);
+            border: 5px solid #07518e;
+            color: white;
+            padding: 12px 30px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 3vw; /* Relative font size */
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+    
+        .button-container button:hover {
+            background-color: #00008b;
+            color: #add8e6;
+        }
+    
+        /* Media queries for smaller screens */
+        @media (max-width: 768px) {
+            #left-text {
+                font-size: 12vw; /* Increase font size on smaller devices */
+            }
+            .button-container button {
+                font-size: 5vw; /* Increase button size */
+                padding: 15px 35px;
+            }
+        }
+    
+        @media (max-width: 480px) {
+            #left-text {
+                font-size: 14vw; /* Even larger font on very small screens */
+            }
+            .button-container button {
+                font-size: 6vw; /* Larger button size for very small screens */
+                padding: 18px 40px;
+            }
+        }
+    </style>
+    
+</head>
+<body>
+
+    <div id="left-text"></div>
+    <div class="button-container">
+        <button onclick="proceed()">Proceed</button>
+    </div>
+
+    <script>
+        // Function to retrieve 'quantity' and 'layout' from the URL
+        function getQuantityFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const quantity = parseInt(urlParams.get('quantity'));
+            return isNaN(quantity) || quantity <= 0 ? 0 : quantity; // Return 0 if quantity is invalid or zero
+        }
+    
+        function getLayoutFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const layout = urlParams.get('layout');
+            return (layout === "lined" || layout === "unlined") ? layout : "default";
+        }
+    
+        // Function to send request to ESP8266 to control the servo based on layout and quantity
+        function rotateServo(quantity, layout) {
+            const controlUrl = `/control?layout=${layout}&quantity=${quantity}`;
+            
+            // Send a GET request to ESP8266 to start the servo rotation
+            fetch(controlUrl)
+                .then(response => response.text())
+                .then(data => {
+                    // Optionally log data from the server
+                    console.log(data);
+                    const statusElement = document.getElementById("status");
+                    if (statusElement) {
+                        statusElement.innerText = "Rotating servos, please wait...";
+                    }
+    
+                    setTimeout(() => {
+                        // Show the "Proceed" button after 2 seconds
+                        document.querySelector('.button-container').style.display = 'block';
+                    }, 2000); // Wait 2 seconds before showing the "Proceed" button
+                })
+                .catch(error => {
+                    console.error("Error triggering servo rotation:", error);
+                    const statusElement = document.getElementById("status");
+                    if (statusElement) {
+                        statusElement.innerText = "Error: Unable to rotate servos.";
+                    }
+                    // Optionally show the button even if the request fails
+                    document.querySelector('.button-container').style.display = 'block';
+                });
+        }
+    
+        // Function to simulate the text animation
+        function displayText() {
+            const text = "DISPENSING PRODUCT . . .";
+            const leftText = document.getElementById('left-text');
+            let index = 0;
+    
+            function animateText() {
+                if (index < text.length) {
+                    leftText.textContent += text.charAt(index);
+                    index++;
+                    setTimeout(animateText, 100); // Speed of the animation
+                } else {
+                    leftText.classList.add('blinking'); // Add blinking effect after the text is fully displayed
+                }
+            }
+    
+            animateText();
+        }
+    
+        // Function for the "Proceed" button to navigate to lastpage.html
+        function proceed() {
+            // Redirect directly to lastpage.html when the button is clicked
+            window.location.href = 'lastpage.html';
+        }
+    
+        // Main logic when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Retrieve layout and quantity from localStorage (or URL if needed)
+            let layout = localStorage.getItem('selectedLayout');
+            let quantity = parseInt(localStorage.getItem('quantity'), 10);
+    
+            if (!layout || isNaN(quantity)) {
+                layout = getLayoutFromURL();
+                quantity = getQuantityFromURL();
+            }
+    
+            // If no valid data, redirect back to the payment page or show an error
+            if (!layout || isNaN(quantity)) {
+                alert('Invalid data. Please complete the payment process.');
+                window.location.href = 'coinpay.html'; // or 'cashpay.html' depending on the method
+                return;
+            }
+    
+            // Display the "DISPENSING PRODUCT" text animation
+            displayText();
+    
+            // Start rotating the servos based on layout and quantity
+            rotateServo(quantity, layout);
+        });
+    </script>
+
+</body>
+</html>
